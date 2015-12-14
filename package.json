@@ -1,0 +1,34 @@
+{
+  "name": "mongoose-tenant",
+  "version": "0.0.1",
+  "description": "Add tenant ref field and helpers function to mongoose models.",
+  "main": "index.js",
+  "scripts": {
+    "test": "mocha ./test/*.js",
+    "test-travis": "istanbul cover ./node_modules/mocha/bin/_mocha -- -R spec ./test/*"
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/Palmabit-IT/mongoose-tenant.git"
+  },
+  "keywords": [
+    "mongoose",
+    "tenant",
+    "multitenant",
+    "mongodb"
+  ],
+  "devDependencies": {
+    "acquit": "0.0.3",
+    "istanbul": "0.3.2",
+    "mocha": "2.2.5",
+    "mongoose": "4.x"
+  },
+  "peerDependencies": {
+    "mongoose": "4.x"
+  },
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/Palmabit-IT/mongoose-tenant/issues"
+  },
+  "homepage": "https://github.com/Palmabit-IT/mongoose-tenant"
+}
