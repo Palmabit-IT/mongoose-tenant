@@ -5,6 +5,12 @@ Add tenant ref attribute and helpers function to mongoose models.
 [![Build Status](https://travis-ci.org/Palmabit-IT/mongoose-tenant.svg?branch=master)](https://travis-ci.org/Palmabit-IT/mongoose-tenant)
 [![Coverage Status](https://coveralls.io/repos/Palmabit-IT/mongoose-tenant/badge.svg?branch=master&service=github)](https://coveralls.io/github/Palmabit-IT/mongoose-tenant?branch=master)
 
+# Installation
+
+```
+npm install --save mongoose-tenant
+```
+
 # API
 
 The `mongoose-tenant` module exposes a single function that you can
