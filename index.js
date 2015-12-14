@@ -42,7 +42,7 @@ function multitenantPlugin(schema, options) {
   function findWhereTenantExistAndIsNotNull(next) {
     this.where(tenant, {
       $exists: true,
-      $nin: [null, undefined, '']
+      $nin: [null, undefined]
     });
     next();
   }
