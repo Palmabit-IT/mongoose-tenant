@@ -1,9 +1,7 @@
 # mongoose-tenant
-
 Add tenant ref attribute and helpers function to mongoose models.
 
-[![Build Status](https://travis-ci.org/Palmabit-IT/mongoose-tenant.svg?branch=master)](https://travis-ci.org/Palmabit-IT/mongoose-tenant)
-[![Coverage Status](https://coveralls.io/repos/Palmabit-IT/mongoose-tenant/badge.svg?branch=master&service=github)](https://coveralls.io/github/Palmabit-IT/mongoose-tenant?branch=master)
+[![Build Status](https://travis-ci.org/Palmabit-IT/mongoose-tenant.svg?branch=master)](https://travis-ci.org/Palmabit-IT/mongoose-tenant) [![Coverage Status](https://coveralls.io/repos/Palmabit-IT/mongoose-tenant/badge.svg?branch=master&service=github)](https://coveralls.io/github/Palmabit-IT/mongoose-tenant?branch=master)
 
 # Installation
 
@@ -12,12 +10,9 @@ npm install --save mongoose-tenant
 ```
 
 # API
+The `mongoose-tenant` module exposes a single function that you can pass to the `mongoose.Schema.prototype.plugin()` function.
 
-The `mongoose-tenant` module exposes a single function that you can
-pass to the `mongoose.Schema.prototype.plugin()` function.
-
-Suppose you have two collections, "users" and "companies". The `User` model
-looks like this:
+Suppose you have two collections, "users" and "companies". The `User` model looks like this:
 
 ```javascript
 var tenant = require('mongoose-tenant');
@@ -30,7 +25,6 @@ userSchema.plugin(tenant, {
   tenant: 'company'
 });
 User = mongoose.model('User', userSchema, 'users');
-
 ```
 
 Suppose your "companies" collection has one document:
@@ -52,17 +46,72 @@ And your "users" collection has one document:
   company: '10ab3f375559dcaa649a3abc'
 }
 ```
-#### It cat get tenant field in schemas
 
-
-You can get the `tenant` field from Model
-This means that, every time you call `find()` or `findOne()`,
-`mongoose-tenant` will automatically call `.populate('lead')`
-for you.
-
+## It can't get a single doc without the tenant attr in conditions object
+if you use findOneByTenant or findByTenant functions you have to pass tenant attr in conditions object or you got an error
 
 ```javascript
-    
+
+
+    Customer.findOneByTenant({}, function(err, result) {
+      should.exist(err);
+      done();
+    });
+```
+
+## It gets a single doc by tenant
+You can get a single doc by tenant
+
+```javascript
+
+
+    Tenant.findOne({
+      name: "Mario Inc."
+    }, function(err, tenant) {
+      assert.ifError(err);
+      Customer.findOneByTenant({
+        tenant: tenant._id
+      }, function(err, result) {
+        should.not.exist(err);
+        result.should.have.property('name');
+        done();
+      });
+
+    });
+```
+
+## It gets 2 docs by tenant
+You can limit docs
+
+```javascript
+
+
+    Tenant.findOne({
+      name: "Mario Inc."
+    }, function(err, tenant) {
+      assert.ifError(err);
+
+      Customer.findByTenant({
+        tenant: tenant._id
+      }, {}, {
+        limit: 2
+      }, function(err, result) {
+        should.not.exist(err);
+        result.should.have.length(2);
+        for (var i = 0; i < 2; ++i) {
+          result[i].should.have.property('name');
+        }
+        done();
+      });
+
+    });
+```
+
+## It can get tenant field in schemas
+You can get the `tenant` field from Model
+
+```javascript
+
 
     Customer
       .findOne({
@@ -74,17 +123,13 @@ for you.
         assert.equal('Mario Inc.', doc.tenant.name);
         done();
       });
-  
 ```
 
-#### It supports custom tenant field
-
-
+## It supports custom tenant field
 `mongoose-tenant` also works on custom tenant field.
 
-
 ```javascript
-    
+
 
     var customerSchema = new Schema({
       name: String
@@ -126,23 +171,16 @@ for you.
 
       });
     });
-
-  
 ```
 
-#### It exclude from search every doc without the `tenant` field
-
-
-For methods: `find()`, `findOne()`, `findOneAndUpdate()` and `count()`
-is added the `where` cond equivalent to { tenant: { $exists: true, $nin: [null, undefined, ''] }) }
-So docs without the `tenant` field are excluded from search.
-
+## It exclude from search every doc without the `tenant` field
+For methods: `find()`, `findOne()`, `findOneAndUpdate()` and `count()` is added the `where` cond equivalent to { tenant: { $exists: true, $nin: [null, undefined, ''] }) } So docs without the `tenant` field are excluded from search.
 
 ```javascript
-    
+
 
     var gost_customer = {
-      name: 'Jonh'
+      name: 'Matteo'
     };
 
     Customer.create(gost_customer, function(err, doc) {
@@ -154,19 +192,26 @@ So docs without the `tenant` field are excluded from search.
         .populate('tenant')
         .exec(function(err, docs) {
           assert.ifError(err);
-          assert.equal(1, docs.length);
-          done();
+          assert.equal(2, docs.length);
+
+          Customer
+            .find({
+              name: 'Matteo'
+            })
+            .populate('tenant')
+            .exec(function(err, docs) {
+              assert.ifError(err);
+              assert.equal(0, docs.length);
+              done();
+            });
+
         });
 
     });
-
-  
 ```
 
 ## Author
-
 [Palmabit Srl](http://www.palmabit.com)
 
 ## License
-
 The MIT License (MIT). Please see [License File](LICENSE) for more information.
