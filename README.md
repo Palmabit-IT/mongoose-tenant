@@ -61,14 +61,14 @@ or you got an error
 
 
 ```javascript
-    
+
 
     Customer.findOneByTenant({}, function(err, result) {
       should.exist(err);
       done();
     });
 
-  
+
 ```
 
 #### It gets a single doc by tenant
@@ -78,7 +78,7 @@ You can get a single doc by tenant
 
 
 ```javascript
-    
+
 
     Tenant.findOne({
       name: "Mario Inc."
@@ -94,7 +94,7 @@ You can get a single doc by tenant
 
     });
 
-  
+
 ```
 
 #### It gets 2 docs by tenant
@@ -104,7 +104,7 @@ You can limit docs
 
 
 ```javascript
-    
+
 
     Tenant.findOne({
       name: "Mario Inc."
@@ -136,7 +136,7 @@ You can get the `tenant` field from Model
 
 
 ```javascript
-    
+
 
     Customer
       .findOne({
@@ -149,7 +149,7 @@ You can get the `tenant` field from Model
         done();
       });
 
-  
+
 ```
 
 #### It supports custom tenant field
@@ -159,7 +159,7 @@ You can get the `tenant` field from Model
 
 
 ```javascript
-    
+
 
     var customerSchema = new Schema({
       name: String
@@ -202,39 +202,7 @@ You can get the `tenant` field from Model
       });
     });
 
-  
-```
 
-#### It throw err if no `tenant` field is present in conditions object
-
-
-For methods: `find()`
-is checked if there is the {tenant: '1123456778803'} conditions
-
-
-```javascript
-    
-
-    var gost_customer = {
-      name: 'Matteo'
-    };
-
-    Customer.create(gost_customer, function(err, doc) {
-      assert.ifError(err);
-      assert.ok(doc);
-
-      Customer
-        .findByTenant()
-        .populate('tenant')
-        .exec(function(err, docs) {
-          should.exist(err);
-          assert.equal(undefined, docs);
-          done();
-
-        });
-    });
-
-  
 ```
 
 ## Author

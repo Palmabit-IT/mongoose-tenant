@@ -202,31 +202,4 @@ describe('mongoose-tenant plugin', function() {
   });
 
 
-  /**
-   *  For methods: `find()`
-   *  is checked if there is the {tenant: '1123456778803'} conditions
-   */
-  it('throw err if no `tenant` field is present in conditions object', function(done) {
-
-    var gost_customer = {
-      name: 'Matteo'
-    };
-
-    Customer.create(gost_customer, function(err, doc) {
-      assert.ifError(err);
-      assert.ok(doc);
-
-      Customer
-        .findByTenant()
-        .populate('tenant')
-        .exec(function(err, docs) {
-          should.exist(err);
-          assert.equal(undefined, docs);
-          done();
-
-        });
-    });
-
-  });
-
 });
