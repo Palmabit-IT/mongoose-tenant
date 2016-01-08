@@ -1,7 +1,9 @@
 # mongoose-tenant
+
 Add tenant ref attribute and helpers function to mongoose models.
 
-[![Build Status](https://travis-ci.org/Palmabit-IT/mongoose-tenant.svg?branch=master)](https://travis-ci.org/Palmabit-IT/mongoose-tenant) [![Coverage Status](https://coveralls.io/repos/Palmabit-IT/mongoose-tenant/badge.svg?branch=master&service=github)](https://coveralls.io/github/Palmabit-IT/mongoose-tenant?branch=master)
+[![Build Status](https://travis-ci.org/Palmabit-IT/mongoose-tenant.svg?branch=master)](https://travis-ci.org/Palmabit-IT/mongoose-tenant)
+[![Coverage Status](https://coveralls.io/repos/Palmabit-IT/mongoose-tenant/badge.svg?branch=master&service=github)](https://coveralls.io/github/Palmabit-IT/mongoose-tenant?branch=master)
 
 # Installation
 
@@ -10,9 +12,12 @@ npm install --save mongoose-tenant
 ```
 
 # API
-The `mongoose-tenant` module exposes a single function that you can pass to the `mongoose.Schema.prototype.plugin()` function.
 
-Suppose you have two collections, "users" and "companies". The `User` model looks like this:
+The `mongoose-tenant` module exposes a single function that you can
+pass to the `mongoose.Schema.prototype.plugin()` function.
+
+Suppose you have two collections, "users" and "companies". The `User` model
+looks like this:
 
 ```javascript
 var tenant = require('mongoose-tenant');
@@ -25,6 +30,7 @@ userSchema.plugin(tenant, {
   tenant: 'company'
 });
 User = mongoose.model('User', userSchema, 'users');
+
 ```
 
 Suppose your "companies" collection has one document:
@@ -46,24 +52,33 @@ And your "users" collection has one document:
   company: '10ab3f375559dcaa649a3abc'
 }
 ```
+#### It can't get a single doc without the tenant attr in conditions object
 
-## It can't get a single doc without the tenant attr in conditions object
-if you use findOneByTenant or findByTenant functions you have to pass tenant attr in conditions object or you got an error
+
+if you use findOneByTenant or findByTenant functions
+you have to pass tenant attr in conditions object
+or you got an error
+
 
 ```javascript
-
+    
 
     Customer.findOneByTenant({}, function(err, result) {
       should.exist(err);
       done();
     });
+
+  
 ```
 
-## It gets a single doc by tenant
+#### It gets a single doc by tenant
+
+
 You can get a single doc by tenant
 
-```javascript
 
+```javascript
+    
 
     Tenant.findOne({
       name: "Mario Inc."
@@ -78,13 +93,18 @@ You can get a single doc by tenant
       });
 
     });
+
+  
 ```
 
-## It gets 2 docs by tenant
+#### It gets 2 docs by tenant
+
+
 You can limit docs
 
-```javascript
 
+```javascript
+    
 
     Tenant.findOne({
       name: "Mario Inc."
@@ -105,13 +125,18 @@ You can limit docs
       });
 
     });
+
+  
 ```
 
-## It can get tenant field in schemas
+#### It can get tenant field in schemas
+
+
 You can get the `tenant` field from Model
 
-```javascript
 
+```javascript
+    
 
     Customer
       .findOne({
@@ -123,13 +148,18 @@ You can get the `tenant` field from Model
         assert.equal('Mario Inc.', doc.tenant.name);
         done();
       });
+
+  
 ```
 
-## It supports custom tenant field
+#### It supports custom tenant field
+
+
 `mongoose-tenant` also works on custom tenant field.
 
-```javascript
 
+```javascript
+    
 
     var customerSchema = new Schema({
       name: String
@@ -152,7 +182,7 @@ You can get the `tenant` field from Model
       assert.ok(doc);
 
       GoodCustomer.create({
-        name: 'Mario Rossi',
+        name: 'Mario Reds',
         company: doc._id
       }, function(error, doc) {
         assert.ifError(error);
@@ -160,7 +190,7 @@ You can get the `tenant` field from Model
 
         GoodCustomer
           .findOne({
-            name: "Mario Rossi"
+            name: "Mario Reds"
           })
           .populate('company')
           .exec(function(err, doc) {
@@ -171,13 +201,19 @@ You can get the `tenant` field from Model
 
       });
     });
+
+  
 ```
 
-## It exclude from search every doc without the `tenant` field
-For methods: `find()`, `findOne()`, `findOneAndUpdate()` and `count()` is added the `where` cond equivalent to { tenant: { $exists: true, $nin: [null, undefined, ''] }) } So docs without the `tenant` field are excluded from search.
+#### It throw err if no `tenant` field is present in conditions object
+
+
+For methods: `find()`
+is checked if there is the {tenant: '1123456778803'} conditions
+
 
 ```javascript
-
+    
 
     var gost_customer = {
       name: 'Matteo'
@@ -188,30 +224,23 @@ For methods: `find()`, `findOne()`, `findOneAndUpdate()` and `count()` is added 
       assert.ok(doc);
 
       Customer
-        .find()
+        .findByTenant()
         .populate('tenant')
         .exec(function(err, docs) {
-          assert.ifError(err);
-          assert.equal(2, docs.length);
-
-          Customer
-            .find({
-              name: 'Matteo'
-            })
-            .populate('tenant')
-            .exec(function(err, docs) {
-              assert.ifError(err);
-              assert.equal(0, docs.length);
-              done();
-            });
+          should.exist(err);
+          assert.equal(undefined, docs);
+          done();
 
         });
-
     });
+
+  
 ```
 
 ## Author
+
 [Palmabit Srl](http://www.palmabit.com)
 
 ## License
+
 The MIT License (MIT). Please see [License File](LICENSE) for more information.

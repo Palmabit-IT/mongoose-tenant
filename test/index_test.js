@@ -5,7 +5,9 @@ var mongoose = require('mongoose'),
   Schema = mongoose.Schema,
   ObjectId = mongoose.Schema.Types.ObjectId;
 
-mongoose.connect('mongodb://localhost:27017/tenant');
+process.env.NODE_ENV = 'test';
+
+mongoose.connect('mongodb://localhost:27017/tenant')
 
 describe('mongoose-tenant plugin', function() {
 
@@ -13,6 +15,7 @@ describe('mongoose-tenant plugin', function() {
   var Customer;
 
   before(function(done) {
+
 
     var customerSchema = new Schema({
       name: String
@@ -67,6 +70,8 @@ describe('mongoose-tenant plugin', function() {
     });
 
   });
+
+
 
   /**
    *  if you use findOneByTenant or findByTenant functions
@@ -174,7 +179,7 @@ describe('mongoose-tenant plugin', function() {
       assert.ok(doc);
 
       GoodCustomer.create({
-        name: 'Mario Rossi',
+        name: 'Mario Reds',
         company: doc._id
       }, function(error, doc) {
         assert.ifError(error);
@@ -182,7 +187,7 @@ describe('mongoose-tenant plugin', function() {
 
         GoodCustomer
           .findOne({
-            name: "Mario Rossi"
+            name: "Mario Reds"
           })
           .populate('company')
           .exec(function(err, doc) {
@@ -198,11 +203,10 @@ describe('mongoose-tenant plugin', function() {
 
 
   /**
-   *  For methods: `find()`, `findOne()`, `findOneAndUpdate()` and `count()`
-   *  is added the `where` cond equivalent to { tenant: { $exists: true, $nin: [null, undefined, ''] }) }
-   *  So docs without the `tenant` field are excluded from search.
+   *  For methods: `find()`
+   *  is checked if there is the {tenant: '1123456778803'} conditions
    */
-  it('exclude from search every doc without the `tenant` field', function(done) {
+  it('throw err if no `tenant` field is present in conditions object', function(done) {
 
     var gost_customer = {
       name: 'Matteo'
@@ -213,25 +217,14 @@ describe('mongoose-tenant plugin', function() {
       assert.ok(doc);
 
       Customer
-        .find()
+        .findByTenant()
         .populate('tenant')
         .exec(function(err, docs) {
-          assert.ifError(err);
-          assert.equal(2, docs.length);
-
-          Customer
-            .find({
-              name: 'Matteo'
-            })
-            .populate('tenant')
-            .exec(function(err, docs) {
-              assert.ifError(err);
-              assert.equal(0, docs.length);
-              done();
-            });
+          should.exist(err);
+          assert.equal(undefined, docs);
+          done();
 
         });
-
     });
 
   });
