@@ -3,6 +3,10 @@ All notable changes to this project will be documented in this file.
 This project adheres to [Semantic Versioning](http://semver.org/).
 
 ## 0.0.6 - 2016-01-8
+### Added
+- can manually settings populated fields
+
+## 0.0.6 - 2016-01-8
 ### Changed
 - verify if cb is a function first
 

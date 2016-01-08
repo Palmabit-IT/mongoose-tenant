@@ -154,6 +154,61 @@ describe('mongoose-tenant plugin', function() {
   });
 
   /**
+   *  You can populate refs in schemas
+   */
+  it('can populate', function(done) {
+
+    Tenant.findOne({
+      name: "Mario Inc."
+    }, function(err, tenant) {
+      assert.ifError(err);
+
+      Customer.findOneByTenant({
+        tenant: tenant._id,
+        name: "Mario Rossi"
+      }, {}, {
+        populate: 'tenant'
+      }, function(err, doc) {
+        should.not.exist(err);
+        assert.equal('Mario Inc.', doc.tenant.name);
+        assert.equal('IT123456789', doc.tenant.vat);
+
+        done();
+      });
+
+    });
+
+  });
+
+  /**
+   *  you can manually populate a field
+   */
+  it('can settings populated fields', function(done) {
+
+    Tenant.findOne({
+      name: "Mario Inc."
+    }, function(err, tenant) {
+      assert.ifError(err);
+
+      Customer.findOneByTenant({
+        tenant: tenant._id,
+        name: "Mario Rossi"
+      }, {}, {
+        populate: [{model:'tenant', fileds: '_id name'}]
+      }, function(err, doc) {
+        should.not.exist(err);
+        doc.should.have.property('_id');
+
+        assert.equal('Mario Inc.', doc.tenant.name);
+        assert.equal(undefined, doc.tenant.vat);
+
+        done();
+      });
+
+    });
+  });
+
+  /**
    *  `mongoose-tenant` also works on custom tenant field.
    */
   it('supports custom tenant field', function(done) {

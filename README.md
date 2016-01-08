@@ -61,14 +61,14 @@ or you got an error
 
 
 ```javascript
-
+    
 
     Customer.findOneByTenant({}, function(err, result) {
       should.exist(err);
       done();
     });
 
-
+  
 ```
 
 #### It gets a single doc by tenant
@@ -78,7 +78,7 @@ You can get a single doc by tenant
 
 
 ```javascript
-
+    
 
     Tenant.findOne({
       name: "Mario Inc."
@@ -94,7 +94,7 @@ You can get a single doc by tenant
 
     });
 
-
+  
 ```
 
 #### It gets 2 docs by tenant
@@ -104,7 +104,7 @@ You can limit docs
 
 
 ```javascript
-
+    
 
     Tenant.findOne({
       name: "Mario Inc."
@@ -136,7 +136,7 @@ You can get the `tenant` field from Model
 
 
 ```javascript
-
+    
 
     Customer
       .findOne({
@@ -149,7 +149,72 @@ You can get the `tenant` field from Model
         done();
       });
 
+  
+```
 
+#### It can populate
+
+
+You can populate refs in schemas
+
+
+```javascript
+    
+
+    Tenant.findOne({
+      name: "Mario Inc."
+    }, function(err, tenant) {
+      assert.ifError(err);
+
+      Customer.findOneByTenant({
+        tenant: tenant._id,
+        name: "Mario Rossi"
+      }, {}, {
+        populate: 'tenant'
+      }, function(err, doc) {
+        should.not.exist(err);
+        assert.equal('Mario Inc.', doc.tenant.name);
+        assert.equal('IT123456789', doc.tenant.vat);
+
+        done();
+      });
+
+    });
+
+  
+```
+
+#### It can settings populated fields
+
+
+you can manually populate a field
+
+
+```javascript
+    
+
+    Tenant.findOne({
+      name: "Mario Inc."
+    }, function(err, tenant) {
+      assert.ifError(err);
+
+      Customer.findOneByTenant({
+        tenant: tenant._id,
+        name: "Mario Rossi"
+      }, {}, {
+        populate: [{model:'tenant', fileds: '_id name'}]
+      }, function(err, doc) {
+        should.not.exist(err);
+        doc.should.have.property('_id');
+
+        assert.equal('Mario Inc.', doc.tenant.name);
+        assert.equal(undefined, doc.tenant.vat);
+
+        done();
+      });
+
+    });
+  
 ```
 
 #### It supports custom tenant field
@@ -159,7 +224,7 @@ You can get the `tenant` field from Model
 
 
 ```javascript
-
+    
 
     var customerSchema = new Schema({
       name: String
@@ -202,7 +267,7 @@ You can get the `tenant` field from Model
       });
     });
 
-
+  
 ```
 
 ## Author
