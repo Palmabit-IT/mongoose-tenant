@@ -4,6 +4,10 @@ This project adheres to [Semantic Versioning](http://semver.org/).
 
 ## 0.0.7 - 2016-01-8
 ### Added
+- bugfix: now throw err even if you use query obj
+
+## 0.0.7 - 2016-01-8
+### Added
 - can manually settings populated fields
 
 ## 0.0.6 - 2016-01-8
