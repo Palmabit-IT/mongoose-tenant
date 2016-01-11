@@ -1,6 +1,6 @@
 {
   "name": "mongoose-tenant",
-  "version": "0.0.7",
+  "version": "0.0.8",
   "description": "Add tenant ref field and helpers function to mongoose models.",
   "author": "Palmabit Srl<hello@palmabit.com>",
   "contributors": [
